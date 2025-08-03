@@ -1,0 +1,57 @@
+const express = require('express');
+const app = express();
+
+// Your allowed phone numbers - EDIT THESE
+const ALLOWED_NUMBERS = [
+  '+9043122967',
+  '+17861234567'
+];
+
+app.use(express.json());
+
+// Home page
+app.get('/', (req, res) => {
+  res.json({
+    status: 'Webhook is running!',
+    allowed_numbers: ALLOWED_NUMBERS.length,
+    webhook_url: `https://${req.get('host')}/webhook`
+  });
+});
+
+// Health check
+app.get('/health', (req, res) => {
+  res.json({
+    status: 'healthy',
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Main webhook for Retell AI
+app.post('/webhook', (req, res) => {
+  const fromNumber = req.body.from_number;
+  const toNumber = req.body.to_number;
+  
+  console.log('Call from:', fromNumber, 'to:', toNumber);
+  
+  if (ALLOWED_NUMBERS.includes(fromNumber)) {
+    console.log('ALLOWED');
+    res.json({
+      call_inbound: {
+        dynamic_variables: {
+          caller_status: 'authorized'
+        }
+      }
+    });
+  } else {
+    console.log('REJECTED');
+    res.status(403).json({
+      error: 'Call rejected'
+    });
+  }
+});
+
+// Start server
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log('Webhook running on port', PORT);
+});
