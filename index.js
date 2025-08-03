@@ -4,8 +4,8 @@ const app = express();
 
 // 🔥 EDIT THESE: Your allowed phone numbers
 const ALLOWED_NUMBERS = [
-  '+13051234567',  // Replace with YOUR actual numbers
-  '+17861234567',  // Add as many as you want
+  '+18635586746',  // Replace with YOUR actual numbers
+  '+19043122967',// Add as many as you want
   // '+1xxxxxxxxxx',
 ];
 
